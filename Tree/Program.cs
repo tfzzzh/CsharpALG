@@ -7,6 +7,9 @@ test_binarysearchtree_remove();
 test_binarysearchtree_iterator();
 test_rbtree_insert();
 test_rbtree_remove();
+test_order_statics_select();
+test_order_statics_remove();
+test_order_statics_get_rank();
 
 void test_binarysearchtree_insert()
 {
@@ -133,5 +136,82 @@ void test_rbtree_remove()
             Console.Write($"{elem} ");
         }
         Console.WriteLine();
+    }
+}
+
+void test_order_statics_select()
+{
+    Console.Write("test_order_statics_select");
+    int[] toInsert = [19, -26, 23, 41, 35, -49, -77, -75, -18, 119, 65, -10, 56, 102, 7, 117, 12, -130, -123, 48, 95, -65, -24, 4, 108, 81, -70, 38, 104, -61, 31, -87, 115, 33, -82, -5, -128, -113, 30, -98, -114, -1, -124, -41, 86, 78, -4, -25, -69, -126, -104, 73, -44, 69];
+    var selector = new OrderStatistics<int>();
+    foreach(int num in toInsert)
+    {
+        selector.Insert(num);
+        // Console.Write($"{num} ");
+        Debug.Assert(selector.IsRedBlackTree());
+    }
+    // Console.WriteLine();
+
+    Array.Sort(toInsert);
+    for (int i=0; i < toInsert.Length; ++i)
+    {
+        int num = selector.Select(i+1);
+        Debug.Assert(num == toInsert[i]);
+        Console.Write($"rank={i+1}:value={num} ");
+    }
+    Console.WriteLine();
+}
+
+void test_order_statics_remove()
+{
+    Console.WriteLine("test_order_statics_remove");
+    int[] toInsert = [19, -26, 23, 41, 35, -49, -77, -75, -18, 119, 65, -10, 56, 102, 7, 117, 12, -130, -123, 48, 95, -65, -24, 4, 108, 81, -70, 38, 104, -61, 31, -87, 115, 33, -82, -5, -128, -113, 30, -98, -114, -1, -124, -41, 86, 78, -4, -25, -69, -126, -104, 73, -44, 69];
+    var selector = new OrderStatistics<int>();
+    var set = new SortedSet<int>();
+    foreach(int num in toInsert)
+    {
+        selector.Insert(num);
+        set.Add(num);
+        // Console.Write($"{num} ");
+        // Debug.Assert(selector.IsRedBlackTree());
+    }
+
+    int sz = toInsert.Length;
+    foreach(int num in toInsert)
+    {
+        selector.Remove(num);
+        set.Remove(num);
+        int r = 1;
+        foreach(var item in set)
+        {
+            Debug.Assert(item == selector.Select(r));
+            r += 1;
+        }
+        Debug.Assert(selector.IsRedBlackTree());
+        sz  -= 1;
+        Debug.Assert(selector.Count == sz);
+        // Console.Write($"{num} ");
+        // Debug.Assert(selector.IsRedBlackTree());
+    }
+}
+
+void test_order_statics_get_rank()
+{
+    Console.WriteLine("test_order_statics_remove");
+    int[] toInsert = [19, -26, 23, 41, 35, -49, -77, -75, -18, 119, 65, -10, 56, 102, 7, 117, 12, -130, -123, 48, 95, -65, -24, 4, 108, 81, -70, 38, 104, -61, 31, -87, 115, 33, -82, -5, -128, -113, 30, -98, -114, -1, -124, -41, 86, 78, -4, -25, -69, -126, -104, 73, -44, 69];
+    var selector = new OrderStatistics<int>();
+    var set = new SortedSet<int>();
+    foreach(int num in toInsert)
+    {
+        selector.Insert(num);
+        set.Add(num);
+        // Console.Write($"{num} ");
+        // Debug.Assert(selector.IsRedBlackTree());
+    }
+
+    Array.Sort(toInsert);
+    for (int i=0; i < toInsert.Length; ++i)
+    {
+        Debug.Assert(selector.GetRank(toInsert[i]) == i+1);
     }
 }
