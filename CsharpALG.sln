@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sort", "Sort\Sort.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tree", "Tree\Tree.csproj", "{77181605-F9DB-4A61-A684-7809DE9119F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sketch", "Sketch\Sketch.csproj", "{FE7AAB52-36DD-4B9B-A0FB-FDF456B5BEE0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{77181605-F9DB-4A61-A684-7809DE9119F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77181605-F9DB-4A61-A684-7809DE9119F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77181605-F9DB-4A61-A684-7809DE9119F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE7AAB52-36DD-4B9B-A0FB-FDF456B5BEE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE7AAB52-36DD-4B9B-A0FB-FDF456B5BEE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE7AAB52-36DD-4B9B-A0FB-FDF456B5BEE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE7AAB52-36DD-4B9B-A0FB-FDF456B5BEE0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
