@@ -10,6 +10,8 @@ test_rbtree_remove();
 test_order_statics_select();
 test_order_statics_remove();
 test_order_statics_get_rank();
+test_fibonacciheap_extract_min();
+test_fibonacciheap_decrease_key();
 
 void test_binarysearchtree_insert()
 {
@@ -214,4 +216,50 @@ void test_order_statics_get_rank()
     {
         Debug.Assert(selector.GetRank(toInsert[i]) == i+1);
     }
+}
+
+
+void test_fibonacciheap_extract_min()
+{
+    Console.WriteLine("test_fibonacciheap_extract_min");
+    int[] arr = [37, 19, 4, 55, 38, -41, 66, 51];
+    var heap = new FibonacciHeap<int>();
+
+    foreach(int elem in arr) heap.Insert(elem);
+    List<int> v = new List<int>();
+    while (heap.Count > 0)
+    {
+        v.Add(heap.ExtractMin());
+    }
+
+    Debug.Assert(v.Count == arr.Length);
+    Array.Sort(arr);
+    for (int i=0; i < arr.Length; ++i)
+        Debug.Assert(arr[i] == v[i]);
+}
+
+void test_fibonacciheap_decrease_key()
+{
+    Console.WriteLine("test_fibonacciheap_decrease_key");
+    int[] arr = [-1,-2,-3,5,4,3,2,1];
+    var heap = new FibonacciHeap<int>();
+
+    var nodes = new List<FibNode<int>>();
+    foreach(int elem in arr) nodes.Add(heap.Insert(elem));
+    int delta = -2;
+    foreach(var x in nodes)
+    {
+        heap.DecreaseKey(x, x.Key + delta);
+    }
+
+    List<int> v = new List<int>();
+    while (heap.Count > 0)
+    {
+        v.Add(heap.ExtractMin());
+    }
+
+    Debug.Assert(v.Count == arr.Length);
+    Array.Sort(arr);
+    for (int i=0; i < arr.Length; ++i)
+        Debug.Assert(arr[i] == v[i] - delta);
 }
