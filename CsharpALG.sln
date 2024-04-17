@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tree", "Tree\Tree.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sketch", "Sketch\Sketch.csproj", "{FE7AAB52-36DD-4B9B-A0FB-FDF456B5BEE0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graph", "Graph\Graph.csproj", "{DD3D1B47-49FA-4E78-B8F6-9FD14F8B439C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{FE7AAB52-36DD-4B9B-A0FB-FDF456B5BEE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE7AAB52-36DD-4B9B-A0FB-FDF456B5BEE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE7AAB52-36DD-4B9B-A0FB-FDF456B5BEE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD3D1B47-49FA-4E78-B8F6-9FD14F8B439C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD3D1B47-49FA-4E78-B8F6-9FD14F8B439C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD3D1B47-49FA-4E78-B8F6-9FD14F8B439C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD3D1B47-49FA-4E78-B8F6-9FD14F8B439C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
