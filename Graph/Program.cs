@@ -3,6 +3,7 @@ using System.Diagnostics;
 using CsharpALG.Graph;
 test_topological_sort();
 test_strongly_connected_components();
+test_bellmanford();
 
 void test_topological_sort()
 {
@@ -111,4 +112,56 @@ void _test_strongly_connected_components(List<List<int>> graph, int trueComponen
             Console.WriteLine();
         }
     }
+}
+
+void test_bellmanford()
+{
+    // case 1: graph with one node
+    List<List<int[]> > graph = new List<List<int[]>>(){
+        new List<int[]>()
+    };
+    var alg = new BellmanFord(graph, 0);
+    alg.computeDistances();
+    alg.PrintDistance();
+    alg.PrintRoute(0);
+
+    // case 2:
+    graph = new List<List<int[]>>()
+    {
+        new List<int[]>(){new int[]{1, 6}, new int[]{2,7}},
+        new List<int[]>(){new int[]{2, 8}, new int[]{4, -4}, new int[]{3, 5}},
+        new List<int[]>(){new int[]{3, -3}, new int[]{4, 9}},
+        new List<int[]>(){new int[]{1, -2}},
+        new List<int[]>(){new int[]{0, 2}, new int[]{3, 7}}
+    };
+    alg = new BellmanFord(graph, 0);
+    alg.computeDistances();
+    alg.PrintDistance();
+    alg.PrintRoute(4);
+
+    // case 3:
+    graph = new List<List<int[]>>()
+    {
+        new List<int[]>(){new int[]{1, 4}, new int[]{3,4}},
+        new List<int[]>(){new int[]{2, 3}, new int[]{3, 4}},
+        new List<int[]>(){new int[]{3, -7}},
+        new List<int[]>(){new int[]{4, -2}},
+        new List<int[]>(){new int[]{0, 1}, new int[]{1, 5}}
+    };
+    alg = new BellmanFord(graph, 0);
+    alg.computeDistances();
+    alg.PrintDistance();
+
+    // case 4:
+    graph = new List<List<int[]>>()
+    {
+        new List<int[]>(){new int[]{1, 1}, new int[]{3,-1000}},
+        new List<int[]>(){new int[]{2, 1}},
+        new List<int[]>(){new int[]{1, -1}, new int[]{3, 1000}},
+        new List<int[]>(){},
+    };
+    alg = new BellmanFord(graph, 0);
+    alg.computeDistances();
+    alg.PrintDistance();
+    alg.PrintRoute(2);
 }
