@@ -4,6 +4,8 @@ using CsharpALG.Graph;
 test_topological_sort();
 test_strongly_connected_components();
 test_bellmanford();
+test_dijkstra();
+test_floyd();
 
 void test_topological_sort()
 {
@@ -164,4 +166,83 @@ void test_bellmanford()
     alg.computeDistances();
     alg.PrintDistance();
     alg.PrintRoute(2);
+}
+
+void test_dijkstra()
+{
+    Console.WriteLine("test dijkstra method");
+    // case 1: two node graph without edges
+    List<List<int[]> > graph = new List<List<int[]>>(){
+        new List<int[]>(),
+        new List<int[]>()
+    };
+    var alg = new Dijkstra(graph, 1);
+    alg.computeDistances();
+    alg.PrintDistance();
+    alg.PrintRoute(0);
+    alg.PrintRoute(1);
+
+    // case 2: dag
+    graph = new List<List<int[]>>(){
+        new List<int[]>(){new int[]{1, 5}, new int[]{2, 2}},
+        new List<int[]>(){new int[]{2, 2}, new int[]{3, 6}},
+        new List<int[]>(){new int[]{3, 7}, new int[]{4, 4}, new int[]{5, 2}},
+        new List<int[]>(){new int[]{4, 1}},
+        new List<int[]>(){new int[]{5, 2}},
+        new List<int[]>()
+    };
+    alg = new Dijkstra(graph, 1);
+    alg.computeDistances();
+    alg.PrintDistance();
+    alg.PrintRoute(4);
+
+    // case 3: graph with loop
+    graph = new List<List<int[]>>(){
+        new List<int[]>(){new int[]{1, 10}, new int[]{2, 5}},
+        new List<int[]>(){new int[]{2, 2}, new int[]{3, 1}},
+        new List<int[]>(){new int[]{1, 3}, new int[]{3, 9}, new int[]{4, 2}},
+        new List<int[]>(){new int[]{4, 4}},
+        new List<int[]>(){new int[]{0, 7}, new int[]{3, 6}},
+    };
+    alg = new Dijkstra(graph, 0);
+    alg.computeDistances();
+    alg.PrintDistance();
+    alg.PrintRoute(3);
+}
+
+void test_floyd()
+{
+    // case 1: two not connected point
+    Console.WriteLine("test test_floyd method");
+    var graph = new int[2, 2]{{0, int.MaxValue},{int.MaxValue, 0}};
+    var alg = new FloydWarshall(graph);
+    alg.computeDistances();
+    alg.PrintDistance();
+    alg.PrintRoute(0, 0);
+
+    // case 2:
+    graph = new int[5, 5]{
+        {0, 3, 8, int.MaxValue, -4},
+        {int.MaxValue, 0, int.MaxValue, 1, 7},
+        {int.MaxValue, 4, 0, int.MaxValue, int.MaxValue},
+        {2, int.MaxValue, -5, 0, int.MaxValue},
+        {int.MaxValue,int.MaxValue,int.MaxValue,6,0}
+    };
+    alg = new FloydWarshall(graph);
+    alg.computeDistances();
+    alg.PrintDistance();
+    alg.PrintRoute(4, 0);
+
+    // case 3:
+    graph = new int[6,6]{
+       {1, 4, 1, 8, 5, 1},
+       {9, 0, 8, 1, 6, 2},
+       {0, 3, 5, 3, 0, 1},
+       {6, 2, 2, 3, 2, 4},
+       {7, 0, 8, 0, 9, 3},
+       {9, 5, 1, 4, 9, 6}
+    };
+    alg = new FloydWarshall(graph);
+    alg.computeDistances();
+    alg.PrintDistance();
 }
