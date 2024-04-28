@@ -6,6 +6,7 @@ test_strongly_connected_components();
 test_bellmanford();
 test_dijkstra();
 test_floyd();
+test_astar();
 
 void test_topological_sort()
 {
@@ -213,7 +214,7 @@ void test_dijkstra()
 void test_floyd()
 {
     // case 1: two not connected point
-    Console.WriteLine("test test_floyd method");
+    Console.WriteLine("test floyd method");
     var graph = new int[2, 2]{{0, int.MaxValue},{int.MaxValue, 0}};
     var alg = new FloydWarshall(graph);
     alg.computeDistances();
@@ -245,4 +246,60 @@ void test_floyd()
     alg = new FloydWarshall(graph);
     alg.computeDistances();
     alg.PrintDistance();
+}
+
+void test_astar()
+{
+    Console.WriteLine("test astar");
+
+    // case 1: two node graph without edges
+    List<List<int[]> > graph = new List<List<int[]>>(){
+        new List<int[]>(),
+        new List<int[]>()
+    };
+    var alg = new Astar(graph);
+    int distance = alg.computeDistance(0, 0, [1, 0]);
+    if (distance < int.MaxValue)
+        Console.WriteLine($"distance from {0} to {0} is {distance}");
+    alg.PrintRoute(0, 0);
+    distance = alg.computeDistance(0, 1, [1, 0]);
+    if (distance < int.MaxValue)
+        Console.WriteLine($"distance from {0} to {1} is {distance}");
+    alg.PrintRoute(0, 1);
+
+    // case 2: use h = [0] make astar a dijkstra
+    graph = new List<List<int[]>>(){
+        new List<int[]>(){new int[]{1, 10}, new int[]{2, 5}},
+        new List<int[]>(){new int[]{2, 2}, new int[]{3, 1}},
+        new List<int[]>(){new int[]{1, 3}, new int[]{3, 9}, new int[]{4, 2}},
+        new List<int[]>(){new int[]{4, 4}},
+        new List<int[]>(){new int[]{0, 7}, new int[]{3, 6}},
+    };
+    alg = new Astar(graph);
+    distance = alg.computeDistance(0, 3, [0,0,0,0,0]);
+    if (distance < int.MaxValue)
+        Console.WriteLine($"distance from {0} to {3} is {distance}");
+    alg.PrintRoute(0, 3);
+
+    // case 3:
+    graph = new List<List<int[]>>(){
+        new List<int[]>(){new int[]{1, 4}, new int[]{2, 10}, new int[]{3, 11}},
+        new List<int[]>(){new int[]{2, 8}, new int[]{4, 5}}, // A 1
+        new List<int[]>(){new int[]{4, 15}}, // B 2
+        new List<int[]>(){new int[]{4, 8}, new int[]{6, 2}, new int[]{5, 20}}, // C
+        new List<int[]>(){new int[]{8, 16}, new int[]{9, 20}, new int[]{6, 1}}, // D 4
+        new List<int[]>(){new int[]{7, 19}}, // E 5
+        new List<int[]>(){new int[]{7, 13}}, // F 6
+        new List<int[]>(){}, // G 7
+        new List<int[]>(){new int[]{9, 1}, new int[]{10, 2}}, // H 8
+        new List<int[]>(){new int[]{10, 5}, new int[]{11, 13}, new int[]{7, 3}}, // I 9
+        new List<int[]>(){new int[]{11, 7}}, // J 10
+        new List<int[]>(){new int[]{7, 16}}, // K 11
+    };
+
+    alg = new Astar(graph);
+    distance = alg.computeDistance(0, 7, [7, 8, 6, 5, 5, 3, 3, 0, 7, 4, 5, 3]);
+    if (distance < int.MaxValue)
+        Console.WriteLine($"distance from {0} to {7} is {distance}");
+    alg.PrintRoute(0, 7);
 }
