@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sketch", "Sketch\Sketch.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graph", "Graph\Graph.csproj", "{DD3D1B47-49FA-4E78-B8F6-9FD14F8B439C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaxFlow", "MaxFlow\MaxFlow.csproj", "{1E98CBB9-4FE7-462E-86C5-EE767D2C34E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{DD3D1B47-49FA-4E78-B8F6-9FD14F8B439C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD3D1B47-49FA-4E78-B8F6-9FD14F8B439C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD3D1B47-49FA-4E78-B8F6-9FD14F8B439C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E98CBB9-4FE7-462E-86C5-EE767D2C34E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E98CBB9-4FE7-462E-86C5-EE767D2C34E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E98CBB9-4FE7-462E-86C5-EE767D2C34E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E98CBB9-4FE7-462E-86C5-EE767D2C34E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
