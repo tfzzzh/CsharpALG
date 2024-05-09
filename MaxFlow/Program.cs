@@ -1,7 +1,8 @@
-﻿using CsharpALG.MaxFlow;
-testEdmondsKarp();
+﻿using System.Diagnostics;
+using CsharpALG.MaxFlow;
+testMaxFlow();
 
-void testEdmondsKarp()
+void testMaxFlow()
 {
     // case1
     int[,] capacity = new int[6,6]{
@@ -18,6 +19,10 @@ void testEdmondsKarp()
     Console.WriteLine($"the maxflow computed is {mf}");
     alg.DisplayMaxFlow();
 
+    var alg_rf = new RelabelToFront(capacity, 0, 5);
+    int mf_rf = alg_rf.ComputeMaxFlow();
+    Debug.Assert(mf_rf == mf);
+
     // case2
     capacity = new int[6,6]{
         {14, 1, 13, 8, 8, 16},
@@ -31,5 +36,10 @@ void testEdmondsKarp()
     mf = alg.ComputeMaxFlow();
     Console.WriteLine($"the maxflow computed is {mf}");
     alg.DisplayMaxFlow();
+
+    alg_rf = new RelabelToFront(capacity, 0, 5);
+    mf_rf = alg_rf.ComputeMaxFlow();
+    Debug.Assert(mf_rf == mf);
+
 }
 
