@@ -7,6 +7,7 @@ test_bellmanford();
 test_dijkstra();
 test_floyd();
 test_astar();
+test_hungarian();
 
 void test_topological_sort()
 {
@@ -302,4 +303,13 @@ void test_astar()
     if (distance < int.MaxValue)
         Console.WriteLine($"distance from {0} to {7} is {distance}");
     alg.PrintRoute(0, 7);
+}
+
+void test_hungarian()
+{
+    int[,] w = new int[4, 4]{{18, 14, 17, -1}, {-5, -2, -3,-6}, {9, 4, 8,17}, {5,5,6,4}};
+    var alg = new Hungarian(w);
+    int result = alg.GetMinCost();
+    Console.WriteLine($"min max computed by hungarian algorithm: {result}");
+    Debug.Assert(alg.CheckResult());
 }
