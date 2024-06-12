@@ -110,6 +110,46 @@ public static class LinearAlg
         return result;
     }
 
+    public static double[,] AppendColumn(double[,] A, double x)
+    {
+        int m = A.GetLength(0), n = A.GetLength(1);
+
+        double[,] X = new double[m, n+1];
+        for (int i=0; i < m; ++i)
+        {
+            for (int j=0; j < n; ++j)
+            {
+                X[i, j] = A[i, j];
+            }
+
+            X[i, n] = x;
+        }
+
+        return X;
+    }
+
+    public static double[] MatMul(double[,] A, double[] b)
+    {
+        int m = A.GetLength(0), n = A.GetLength(1), p = b.Length;
+        // check if one dimension of A, B being empty
+        if (m == 0 || n == 0 || p == 0)
+            throw new InvalidDataException("both input matrix A and vector b shall not be empty");
+
+        // check if dimemsion of A, B compatible
+        if (n != p)
+            throw new InvalidDataException($"matrix A of shape [{m}, {n}] can't multiply with b of shape [{p}]");
+
+        double[] c = new double[m];
+        for (int i=0; i < m; ++i)
+        {
+            c[i] = 0.0;
+            for (int j=0; j < n; ++j)
+                c[i] += A[i,j] * b[j];
+        }
+
+        return c;
+    }
+
     public static double[,] MatMinus(double[,] A, double[,] B)
     {
         int m = A.GetLength(0), n = A.GetLength(1);
@@ -124,6 +164,18 @@ public static class LinearAlg
         return C;
     }
 
+    public static double[] Minus(double[] a, double[] b)
+    {
+        int m = a.Length;
+        if (m != b.Length)
+            throw new InvalidDataException("length of vector a and b are not the same");
+
+        double[] c = new double[m];
+        for (int i=0; i < m; ++i)
+            c[i] = a[i] - b[i];
+        return c;
+    }
+
     public static double L2Norm(double[, ] A)
     {
         int m = A.GetLength(0), n = A.GetLength(1);
@@ -133,6 +185,18 @@ public static class LinearAlg
         for (int i=0; i < m; ++i)
             for (int j=0; j < n; ++j)
                 result += A[i, j] * A[i, j];
+
+        return Math.Sqrt(result);
+    }
+
+    public static double L2Norm(double[] a)
+    {
+        int m = a.Length;
+        if (m == 0) return 0.0;
+
+        double result = 0.0;
+        for (int i=0; i < m; ++i)
+            result += a[i] * a[i];
 
         return Math.Sqrt(result);
     }
@@ -202,5 +266,51 @@ public static class LinearAlg
         }
 
         return pb;
+    }
+
+    /// <summary>
+    /// Solve linear regression
+    ///     min_{x} \| Ax - b \|^2 + \lambda \|x\|^2
+    ///
+    /// Take gradient and set it to 0, one get the equation:
+    ///     A^T(Ax - b) + \lambda x = 0
+    ///     (A^T * A + \lambda I) x = A^T b
+    ///
+    /// </summary>
+    /// <param name="A"></param>
+    /// <param name="b"></param>
+    /// <param name="lambda"></param>
+    /// <returns></returns>
+    static public double[] LinearRegress(double[,] A, double[] b, double lambda)
+    {
+        // compute (A^T * A + \lambda I)
+        int n = A.GetLength(0), p = A.GetLength(1);
+        double[,] C = new double[p, p];
+        for (int i=0; i < p; ++i) C[i, i] = lambda;
+
+        for (int k=0; k < n; ++k)
+        {
+            for (int i=0; i < p; ++i)
+            {
+                for (int j=0; j < p; ++j)
+                {
+                    C[i, j] += A[k,i] * A[k, j];
+                }
+            }
+        }
+
+        // compute A^T b
+        double[] y = new double[p];
+        for (int i=0; i < n; ++i)
+        {
+            for (int j=0; j < p; ++j)
+            {
+                y[j] += A[i, j] * b[i];
+            }
+        }
+
+        double[] x = Solve(C, y);
+
+        return x;
     }
 }

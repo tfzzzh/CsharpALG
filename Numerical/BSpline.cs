@@ -15,6 +15,13 @@ public class BSpline
         if (knots.Length < 2)
             throw new InvalidDataException("knots shall have length >= 2");
 
+        // check if knots are sorted in increasing order
+        for (int i=0; i < knots.Length - 1; ++i)
+        {
+            if (knots[i] >= knots[i+1])
+                throw new InvalidDataException("knots shall be monotonically increasing");
+        }
+
         this.knots = knots;
     }
 
@@ -84,6 +91,28 @@ public class BSpline
         return spine[0..spline_len];
     }
 
+    public double[,] Transfrom(double[] x, int order)
+    {
+        int n = x.Length, dim = knots.Length - 1 - order;
+
+        if (dim <= 0)
+            throw new InvalidDataException($"order = {order} greater than OrderMax={OrderMax}");
+
+        double[,] ys = new double[n, dim];
+        for (int i=0; i < n; ++i)
+        {
+            double[] y = Eval(x[i], order);
+            Debug.Assert(y.Length == dim);
+
+            for (int j=0; j < dim; ++j)
+            {
+                ys[i, j] = y[j];
+            }
+        }
+
+        return ys;
+    }
+
     // spline of order p resides in knots
     // t_i to t_{i+p+1} thus
     // p_max + 1 < knots.Length
@@ -94,4 +123,51 @@ public class BSpline
 
     // knots
     private double[] knots;
+}
+
+
+public class BSplineRegression
+{
+    public BSplineRegression(double[] knots, int order, bool useBias = false, double lambda=0.0)
+    {
+        Array.Sort(knots);
+        splines = new BSpline(knots);
+        xMin = knots[0]; xMax = knots[^1];
+        this.order = order;
+        this.lambda = lambda;
+        this.useBias = useBias;
+    }
+
+    public void Fit(double[] x, double[] y)
+    {
+        var feature = splines.Transfrom(x, order);
+
+        if (useBias)
+        {
+            feature = LinearAlg.AppendColumn(feature, 1.0);
+        }
+
+        weight = LinearAlg.LinearRegress(feature, y, lambda);
+    }
+
+    public double[] Predict(double[] x)
+    {
+        if (weight is null) throw new Exception("model is not trained");
+        double[,] feature = splines.Transfrom(x, order);
+
+        if (useBias)
+        {
+            feature = LinearAlg.AppendColumn(feature, 1.0);
+        }
+        
+        return LinearAlg.MatMul(feature, weight);
+    }
+
+    private BSpline splines;
+    private double xMin;
+    private double xMax;
+    private int order;
+    private double[]? weight;
+    private double lambda;
+    private bool useBias;
 }
