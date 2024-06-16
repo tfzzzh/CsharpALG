@@ -313,4 +313,40 @@ public static class LinearAlg
 
         return x;
     }
+
+    static public Array RandomUniform(double minValue, double maxValue, int[] shape)
+    {
+        long length = 1;
+        foreach(int dim in shape)
+            length *= dim;
+
+        Array array = Array.CreateInstance(typeof(double), shape);
+        var index = new List<int>();
+        _randomUniform(array, 0, minValue, maxValue, shape, index);
+
+        return array;
+    }
+
+    static void _randomUniform(
+        Array arr, int i, double minValue, double maxValue, int[] shape,
+        List<int> index
+    )
+    {
+        var rand = new Random();
+        if (i >= shape.Length)
+        {
+            arr.SetValue(
+                rand.NextDouble() * (maxValue - minValue) + minValue,
+                index.ToArray()
+            );
+            return;
+        }
+
+        for (int idx = 0; idx < shape[i]; ++idx)
+        {
+            index.Add(idx);
+            _randomUniform(arr, i+1, minValue, maxValue, shape, index);
+            index.RemoveAt(index.Count - 1);
+        }
+    }
 }

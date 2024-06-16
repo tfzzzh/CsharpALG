@@ -1,6 +1,11 @@
 ﻿using CsharpALG.Numerical;
 test_linspace();
 test_bspline();
+testLUFullPivot();
+testSolve();
+testLinearRegress();
+testBsplineRegression();
+
 
 void test_linspace()
 {
@@ -17,14 +22,6 @@ void test_bspline()
 {
     _test_bspline(-5.0, 5.0, 8, 64, 4);
 }
-
-testLUFullPivot();
-
-testSolve();
-
-testLinearRegress();
-
-testBsplineRegression();
 
 void testLUFullPivot()
 {
