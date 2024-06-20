@@ -1,10 +1,10 @@
-namespace CSharpALG.MachineLearning.Data;
 using CsharpALG.Numerical;
 using CsharpALG.Numerical.ArrayExtension;
+namespace CSharpALG.MachineLearning.Data;
 
 public class BinaryClassificationLinearSeperable
 {
-    public BinaryClassificationLinearSeperable(int d, int[]? labelIds = null)
+    public BinaryClassificationLinearSeperable(int d, int[]? labelIds = null, double bias=0.0)
     {
         this.d = d;
 

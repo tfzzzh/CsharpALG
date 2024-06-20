@@ -23,4 +23,49 @@ public static class MatrixExtension
 
         return c;
     }
+
+    public static double VecDot(this double[] a, double[] b)
+    {
+        int n = a.Length;
+        if (n == 0)
+            throw new InvalidDataException("array a shall not be empty");
+
+        if (n != b.Length)
+            throw new InvalidDataException("lengthes of a and b are not the same");
+
+        double result = 0;
+        for (int i=0; i < n; ++i)
+            result += a[i] * b[i];
+
+        return result;
+    }
+
+    public static double VecDot(this Span<double> a, Span<double> b)
+    {
+        int n = a.Length;
+        if (n == 0)
+            throw new InvalidDataException("array a shall not be empty");
+
+        if (n != b.Length)
+            throw new InvalidDataException("lengthes of a and b are not the same");
+
+        double result = 0;
+        for (int i=0; i < n; ++i)
+            result += a[i] * b[i];
+
+        return result;
+    }
+
+    public static double[] VecAdd(this double[] a, double[] b)
+    {
+        int n = a.Length;
+        if (n != b.Length)
+            throw new InvalidDataException("lengthes of a and b are not the same");
+
+        double[] result = new double[n];
+        for (int i=0; i < n; ++i)
+            result[i] = a[i] + b[i];
+
+        return result;
+    }
 }

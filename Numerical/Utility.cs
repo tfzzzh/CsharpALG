@@ -32,4 +32,16 @@ public static class Utility
         string arrValues = String.Join(',', arr);
         return "[" + arrValues + "]";
     }
+
+    static public bool IsClose(double a, double b, double atol=1e-8, double relTol=1e-8)
+    {
+        if (Double.IsNaN(a) || Double.IsInfinity(a) || Double.IsNaN(b) || Double.IsInfinity(b))
+            return false;
+
+        double diff = Math.Abs(a - b);
+        double magtitude = Math.Max(Math.Abs(a), Math.Abs(b));
+        if (diff < atol) return true;
+        if (magtitude > atol && diff / magtitude < relTol) return true;
+        return false;
+    }
 }
