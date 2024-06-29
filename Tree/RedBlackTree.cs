@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Diagnostics;
 
-namespace CsharpAlG.Tree;
+namespace CsharpALG.Tree;
 
 /*
 Property of a RB tree

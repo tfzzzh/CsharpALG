@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace CsharpAlG.Tree;
+namespace CsharpALG.Tree;
 
 public class BinarySearchTree<T> : IEnumerable<T>
     where T : IComparable<T>

@@ -68,4 +68,17 @@ public static class MatrixExtension
 
         return result;
     }
+
+    public static void Print<T>(this T[,] arr)
+    {
+        int m = arr.GetLength(0), n = arr.GetLength(1);
+        for (int i=0; i < m; ++i)
+        {
+            for (int j=0; j < n; ++j)
+            {
+                Console.Write($"{arr[i, j]} ");
+            }
+            Console.WriteLine();
+        }
+    }
 }

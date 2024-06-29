@@ -1,4 +1,4 @@
-namespace CsharpAlG.Tree;
+namespace CsharpALG.Tree;
 
 /// <summary>
 /// Given a set of distinct elements {num_1, num_2 .. num_n}, find

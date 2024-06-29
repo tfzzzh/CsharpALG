@@ -1,4 +1,4 @@
-namespace CsharpAlG.Tree;
+namespace CsharpALG.Tree;
 
 /// <summary>
 /// A Fibonacci heap is a data structure for priority queue operations, consisting of

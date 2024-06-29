@@ -1,6 +1,6 @@
 ﻿
 using System.Diagnostics;
-using CsharpAlG.Tree;
+using CsharpALG.Tree;
 test_binarysearchtree_insert();
 test_binarysearchtree_find();
 test_binarysearchtree_remove();
