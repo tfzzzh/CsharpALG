@@ -69,6 +69,68 @@ public static class MatrixExtension
         return result;
     }
 
+    public static double[] Mean(this double[,] A, int axis)
+    {
+        int m = A.GetLength(0), n = A.GetLength(1);
+
+        double[] mu;
+        // compute mean along the rows index
+        if (axis == 0)
+        {
+            mu = new double[n];
+            for (int i=0; i < m; ++i)
+            {
+                for (int j=0; j < n; ++j)
+                {
+                    mu[j] += A[i,j];
+                }
+            }
+
+            for (int j=0; j < n; ++j) mu[j] /= m;
+        }
+        else
+        {
+            mu = new double[m];
+            for (int i=0; i < m; ++i)
+            {
+                for (int j=0; j < n; ++j)
+                    mu[i] += A[i, j];
+                mu[i] /= n;
+            }
+        }
+        return mu;
+    }
+
+    public static double[] Variance(this double[,] A, int axis)
+    {
+        int m = A.GetLength(0), n = A.GetLength(1);
+        double[] mu = A.Mean(axis);
+
+        double[] variance;
+        if (axis == 0)
+        {
+            variance = new double[n];
+            for (int i=0; i < m; ++i)
+            {
+                for (int j=0; j < n; ++j)
+                    variance[j] += (A[i,j] - mu[j]) * (A[i, j] - mu[j]);
+            }
+            for (int j=0; j < n; ++j) variance[j] /= m;
+        }
+        else
+        {
+            variance = new double[m];
+            for (int i=0; i < m; ++i)
+            {
+                for (int j=0; j < n; ++j)
+                    variance[i] += (A[i, j] - mu[i]) * (A[i, j] - mu[i]);
+                variance[i] /= n;
+            }
+        }
+
+        return variance;
+    }
+
     public static void Print<T>(this T[,] arr)
     {
         int m = arr.GetLength(0), n = arr.GetLength(1);

@@ -1,10 +1,12 @@
 ﻿using CsharpALG.Numerical;
+using CsharpALG.Numerical.ArrayExtension;
 test_linspace();
 test_bspline();
 testLUFullPivot();
 testSolve();
 testLinearRegress();
 testBsplineRegression();
+testMeanAndVar();
 
 
 void test_linspace()
@@ -265,4 +267,20 @@ void _testBsplineRegression(double[] x, double[] y, double[] knots, int order, d
 
     Console.WriteLine($"error = {err}, relative error = {relErr}");
     // Console.WriteLine($"{Utility.ArrToString(predict)}");
+}
+
+void testMeanAndVar()
+{
+    double[,] A = new double[,]{{ 4.58197616, -4.51075733,  9.67951797,  0.24291551},
+       { 9.91412653, -8.29388482, -6.61810004,  8.03995908},
+       { 2.79259705,  3.94601312,  2.13049705, 12.18138043},
+       {12.21401125, 12.16908082,  9.47534817,  3.27047919},
+       { 6.0519063 ,  3.95697424, -2.36564196,  4.6748421 },
+       {-3.0068437 , -7.43731642,  5.38253113, -4.94564808},
+       { 2.30213192,  1.77162985,  1.80412042, -1.26513537}};
+
+    Console.WriteLine(Utility.ArrToString(A.Mean(axis: 0)));
+    Console.WriteLine(Utility.ArrToString(A.Mean(axis: 1)));
+    Console.WriteLine(Utility.ArrToString(A.Variance(axis: 0)));
+    Console.WriteLine(Utility.ArrToString(A.Variance(axis: 1)));
 }
