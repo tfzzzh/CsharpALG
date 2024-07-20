@@ -3,4 +3,6 @@
 // AdaBoostExample.Run();
 // KernelSVMExample.Run();
 // ExampleKDTreeNode.Run();
-ExampleKNNSearch.Run();
+// ExampleKNNSearch.Run();
+
+HierarchicalNExample.Run();

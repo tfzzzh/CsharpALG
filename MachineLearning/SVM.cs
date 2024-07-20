@@ -33,6 +33,7 @@ public class KernelSVM
         this.kernel = kernel;
         this.maxIter = maxIter;
         this.C = C;
+        picker = new Random();
     }
 
     public double Fit(double[,] X, int[] y)
@@ -49,7 +50,7 @@ public class KernelSVM
 
         // upgrade lambda
         // in each epoch each \lambda will be updated
-        var picker = new Random();
+        // var picker = new Random();
         double loss = double.MaxValue;
         for (int t = 0; t < maxIter; ++t)
         {
@@ -273,6 +274,7 @@ public class KernelSVM
     // tranin parameters
     int maxIter;
     double C;
+    Random picker;
 }
 
 

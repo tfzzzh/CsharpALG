@@ -332,7 +332,8 @@ public static class LinearAlg
         List<int> index
     )
     {
-        var rand = new Random();
+        // var rand = new Random();
+        var rand = sampler;
         if (i >= shape.Length)
         {
             arr.SetValue(
@@ -349,4 +350,7 @@ public static class LinearAlg
             index.RemoveAt(index.Count - 1);
         }
     }
+
+    public static int Seed = 123;
+    public static Random sampler = new Random(Seed);
 }
