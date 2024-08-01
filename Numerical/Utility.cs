@@ -44,4 +44,14 @@ public static class Utility
         if (magtitude > atol && diff / magtitude < relTol) return true;
         return false;
     }
+
+    public static int[] RandomPerm(int n)
+    {
+        int[] perm = Enumerable.Range(0, n).ToArray();
+        for (int i=0; i < n; ++i) {
+            int idx = LinearAlg.sampler.Next(n-i) + i;
+            (perm[i], perm[idx]) = (perm[idx], perm[i]);
+        }
+        return perm;
+    }
 }

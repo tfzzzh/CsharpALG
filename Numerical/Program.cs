@@ -7,7 +7,8 @@ testSolve();
 testLinearRegress();
 testBsplineRegression();
 testMeanAndVar();
-
+testRandomPerm();
+NdArrayExample.Run();
 
 void test_linspace()
 {
@@ -283,4 +284,12 @@ void testMeanAndVar()
     Console.WriteLine(Utility.ArrToString(A.Mean(axis: 1)));
     Console.WriteLine(Utility.ArrToString(A.Variance(axis: 0)));
     Console.WriteLine(Utility.ArrToString(A.Variance(axis: 1)));
+}
+
+void testRandomPerm()
+{
+    int n = 5;
+    int[] perm = Utility.RandomPerm(n);
+
+    Console.WriteLine($"the generated permutation array is: {Utility.ArrToString(perm)}");
 }
