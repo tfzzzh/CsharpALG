@@ -1,5 +1,5 @@
 using System.Diagnostics;
-namespace CSharpALG.MachineLearning;
+namespace CsharpALG.MachineLearning;
 
 public class AdaBoost
 {

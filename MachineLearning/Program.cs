@@ -1,8 +1,8 @@
-﻿using CSharpALG.MachineLearning;
+﻿using CsharpALG.MachineLearning;
 
 // AdaBoostExample.Run();
 // KernelSVMExample.Run();
 // ExampleKDTreeNode.Run();
 // ExampleKNNSearch.Run();
 
-HierarchicalNExample.Run();
+// HierarchicalNExample.Run();

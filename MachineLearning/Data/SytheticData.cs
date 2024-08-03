@@ -1,6 +1,6 @@
 using CsharpALG.Numerical;
 using CsharpALG.Numerical.ArrayExtension;
-namespace CSharpALG.MachineLearning.Data;
+namespace CsharpALG.MachineLearning.Data;
 
 public class BinaryClassificationLinearSeperable
 {

@@ -1,4 +1,4 @@
-namespace CSharpALG.MachineLearning;
+namespace CsharpALG.MachineLearning;
 
 public static class Metrics
 {

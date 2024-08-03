@@ -1,7 +1,7 @@
 
 using CommunityToolkit.HighPerformance;
 
-namespace CSharpALG.MachineLearning;
+namespace CsharpALG.MachineLearning;
 
 public class NNBruteForceSearch
 {

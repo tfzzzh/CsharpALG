@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Diagnostics;
 
-namespace CSharpALG.MachineLearning;
+namespace CsharpALG.MachineLearning;
 
 
 public class NNSearchByKDTree

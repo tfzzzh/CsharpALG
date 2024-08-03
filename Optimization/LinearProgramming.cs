@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using CsharpALG.Numerical;
 
-namespace CSharpALG.Optimization;
+namespace CsharpALG.Optimization;
 
 /// <summary>
 /// This algorithm use simplex method to solve standard linear programming.

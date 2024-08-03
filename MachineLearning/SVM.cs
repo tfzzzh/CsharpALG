@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using CsharpALG.Numerical;
 using CsharpALG.Numerical.ArrayExtension;
-namespace CSharpALG.MachineLearning;
+namespace CsharpALG.MachineLearning;
 
 /// <summary>
 /// Traing a binary kernel svm

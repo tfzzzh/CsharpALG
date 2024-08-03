@@ -1,8 +1,9 @@
 using System.Diagnostics;
+using System.Text;
 
 namespace CsharpALG.Numerical;
 
-class NdArray<T>
+public class NdArray<T>
 {
     public NdArray(int[] shape)
     {
@@ -16,6 +17,8 @@ class NdArray<T>
 
         // init buffer fo
         buffer_ = new T[Length];
+
+        Grad = null;
     }
 
     public NdArray(T[] data, int[] shape)
@@ -30,12 +33,15 @@ class NdArray<T>
 
         // init buffer fo
         buffer_ = data;
+
+        Grad = null;
     }
 
     // From T[] to NdArray
     public static NdArray<T> From(T[] arr)
     {
-        return new NdArray<T>(arr, [arr.Length]);
+        T[] data = (T[]) arr.Clone();
+        return new NdArray<T>(data, [arr.Length]);
     }
 
     // From T[,] to NdArray
@@ -70,6 +76,13 @@ class NdArray<T>
             }
 
         return new NdArray<T>(data, shape);
+    }
+
+    public NdArray<T> Clone()
+    {
+        T[] data_cloned = (T[]) buffer_.Clone();
+        NdArray<T> clone = new NdArray<T>(data_cloned, Shape);
+        return clone;
     }
 
     // use subscripts to access data
@@ -113,6 +126,60 @@ class NdArray<T>
             Stride[i] = Stride[i + 1] * Shape[i + 1];
     }
 
+    public override string ToString()
+    {
+        // Somtimes the tensor is not contiguous, so we need to convert the index calculated
+        // by shape to the real index calculated by sride.
+        Func<long, long> getRealPos = idx => {
+            long res = 0;
+            long mod = 1;
+            for (int i = NDim - 1; i >= 1; i--) mod *= Shape[i];
+            for (int i = 0; i < NDim; i++) {
+                long shape = idx / mod;
+                idx -= shape * mod;
+                res += shape * Stride[i];
+                if(i < NDim - 1 ) mod /= Shape[i + 1];
+            }
+            return res + Offset;
+        };
+
+        StringBuilder r = new StringBuilder($"Tensor(type:{typeof(T).Name}):\n");
+        for (long i = 0; i < Length; i++) {
+            long mod = 1;
+            for (int j = NDim - 1; j >= 0; j--) {
+                mod *= Shape[j];
+                if (i % mod == 0) {
+                    r.Append("[");
+                } else {
+                    break;
+                }
+            }
+            r.Append(" ").Append(buffer_[getRealPos(i)]);
+
+            if ((i + 1) % Shape[NDim - 1] != 0) r.Append(",");
+
+            r.Append(" ");
+            mod = 1;
+            int hit_times = 0;
+            for (int j = NDim - 1; j >= 0; j--) {
+                mod *= Shape[j];
+                if ((i + 1) % mod == 0) {
+                    r.Append("]");
+                    hit_times++;
+                } else {
+                    break;
+                }
+            }
+            if (hit_times > 0 && hit_times < NDim) {
+                r.Append(",\n");
+                for (int j = 0; j < NDim - hit_times; j++) {
+                    r.Append(" ");
+                }
+            }
+        }
+        // r.Append("\n");
+        return r.ToString();
+    }
 
     private T[] buffer_;
     public int[] Shape { get; internal set; }
@@ -120,6 +187,8 @@ class NdArray<T>
     public long Length { get; internal set; }
     public int NDim { get; internal set; }
     public long Offset { get; internal set; }
+    // when set must same layout
+    public NdArray<T>? Grad {get; set;}
 }
 
 
@@ -154,14 +223,15 @@ static class NdArrayExample
         var tensor = NdArray<double>.From(A);
         Debug.Assert(tensor.NDim == 2);
         Console.WriteLine($"tensor is of shape {tensor.Shape[0]}, {tensor.Shape[1]}");
-        for (int i=0; i < tensor.Shape[0]; ++i)
-        {
-            for (int j=0; j < tensor.Shape[1]; ++j)
-            {
-                Console.Write($"{tensor[i,j]}\t");
-            }
-            Console.WriteLine();
-        }
+        // for (int i=0; i < tensor.Shape[0]; ++i)
+        // {
+        //     for (int j=0; j < tensor.Shape[1]; ++j)
+        //     {
+        //         Console.Write($"{tensor[i,j]}\t");
+        //     }
+        //     Console.WriteLine();
+        // }
+        Console.WriteLine(tensor.ToString());
     }
 
     static void run(double[,,] A)
@@ -169,17 +239,18 @@ static class NdArrayExample
         var tensor = NdArray<double>.From(A);
         Debug.Assert(tensor.NDim == 3);
         Console.WriteLine($"tensor is of shape {tensor.Shape[0]}, {tensor.Shape[1]}, {tensor.Shape[2]}");
-        for (int i=0; i < tensor.Shape[0]; ++i)
-        {
-            for (int j=0; j < tensor.Shape[1]; ++j)
-            {
-                Console.Write('[');
-                for (int k=0; k < tensor.Shape[2]; ++k) {
-                    Console.Write($"{tensor[i,j, k]}\t");
-                }
-                Console.Write(']');
-            }
-            Console.WriteLine();
-        }
+        // for (int i=0; i < tensor.Shape[0]; ++i)
+        // {
+        //     for (int j=0; j < tensor.Shape[1]; ++j)
+        //     {
+        //         Console.Write('[');
+        //         for (int k=0; k < tensor.Shape[2]; ++k) {
+        //             Console.Write($"{tensor[i,j, k]}\t");
+        //         }
+        //         Console.Write(']');
+        //     }
+        //     Console.WriteLine();
+        // }
+        Console.WriteLine(tensor.ToString());
     }
 }

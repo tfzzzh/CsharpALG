@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using CommunityToolkit.HighPerformance;
 using CsharpALG.Numerical;
-namespace CSharpALG.MachineLearning;
+namespace CsharpALG.MachineLearning;
 
 public class HierarchicalNSW
 {
