@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 
@@ -34,6 +35,17 @@ public class NdArray<T>
         // init buffer fo
         buffer_ = data;
 
+        Grad = null;
+    }
+
+    private NdArray(T[] data, int[] shape, long[] stride, long offset, long length)
+    {
+        Shape = shape;
+        NDim = shape.Length;
+        Length = length;
+        Offset = offset;
+        Stride = stride;
+        buffer_ = data;
         Grad = null;
     }
 
@@ -92,11 +104,115 @@ public class NdArray<T>
         set {buffer_[Sub2Ind(indices)] = value;}
     }
 
-    // print ND array
+    // get X[start : end] with start <= end
+    public NdArray<T> Slice(int start, int end)
+    {
+        if (start > end)
+            throw new InvalidDataException($"slice start shall not greater than end: start={start}, end={end}");
+
+        if (end > Shape[0])
+        {
+            Console.WriteLine("end is truncate to shape[0]");
+            end = Shape[0];
+        }
+
+        // offset of X[start] is start * stride[0]
+        // long offsetSlice = start * Stride[0] + Offset;
+        int[] subStart = new int[NDim];
+        subStart[0] = start;
+        long offsetSlice = Sub2Ind(subStart);
+
+        int[] shapeSlice = (int[]) Shape.Clone();
+        shapeSlice[0] = end - start;
+
+        long lengthSlice = 1;
+        for (int i=0; i < NDim; ++i) lengthSlice *= shapeSlice[i];
+
+        // NdArray(T[] data, int[] shape, long[] stride, long offset, long length)
+        return new NdArray<T>(buffer_, shapeSlice, Stride, offsetSlice, lengthSlice);
+    }
+
+    // Slice out range
+    public NdArray<T> Slice(params (int, int)[] ranges)
+    {
+        // check if range is valid
+        if (ranges.Length != NDim)
+            throw new InvalidDataException("Length of range is not equal to dim of array");
+
+        for (int i=0; i < NDim; ++i)
+        {
+            if (ranges[i].Item1 > ranges[i].Item2)
+                throw new InvalidDataException("In i-th dimension, range start > range end");
+
+            if (ranges[i].Item2 > Shape[i])
+                throw new InvalidDataException("range out of bound");
+        }
+
+        // compute offset
+        int[] subStart = new int[NDim];
+        for (int i=0; i < NDim; ++i) subStart[i] = ranges[i].Item1;
+        long offsetSlice = Sub2Ind(subStart);
+
+        // compute shape and length
+        int[] shapeSlice = new int[NDim];
+        long lengthSlice = 1;
+        for (int i=0; i < NDim; ++i)
+        {
+            shapeSlice[i] = ranges[i].Item2 - ranges[i].Item1;
+            lengthSlice *= shapeSlice[i];
+        }
+
+        // return NdArray
+        return new NdArray<T>(buffer_, shapeSlice, Stride, offsetSlice, lengthSlice);
+    }
+
+    public NdArray<T> TakeRow(int[] indices)
+    {
+        // check indices[i] >= 0 && < Shape[0]
+        var shapeTake = (int[]) Shape.Clone();
+        shapeTake[0] = indices.Length;
+
+        long lengthTake = shapeTake.Select(x => (long) x).Aggregate(1L, (acc, val) => acc * val);
+        // Console.WriteLine($"length of take is {lengthTake}");
+        var dataTake = new T[lengthTake];
+
+        int k = 0; // index to dataTake
+        int[] subStart = new int[NDim];
+        int[] subEnd = new int[NDim];
+        for (int i=1; i < NDim; ++i) subEnd[i] = Shape[i] - 1;
+        foreach(int idx in indices)
+        {
+            subStart[0] = idx;
+            subEnd[0] = idx;
+
+            for (long i=Sub2Ind(subStart); i <= Sub2Ind(subEnd); ++i)
+            {
+                dataTake[k] = buffer_[i];
+                k += 1;
+            }
+        }
+
+        return new NdArray<T>(dataTake, shapeTake);
+    }
 
     public T[] Data
     {
         get => buffer_;
+    }
+
+    internal bool nextSub(int[] sub)
+    {
+        sub[NDim-1] += 1;
+        for (int i=NDim-1; i >= 0; --i)
+        {
+            if (sub[i] < Shape[i]) return true;
+
+            sub[i] = 0;
+            if (i > 0)
+                sub[i-1] += 1;
+        }
+
+        return false;
     }
 
     // subscription A[i1, i2 ..] to linear index A[pos]
@@ -206,16 +322,43 @@ static class NdArrayExample
         run(A);
 
         double[,,] B = new double[,,] {
-            {{1.0, 2.0}, {3.0, 4.0}, {5.0, 6.0}},
-            {{2.2, 4.4}, {6.6, 8.8}, {10.0, 12.0}}
+            {{1.0, 1.0}, {2.0, 2.0}, {3.0, 3.0}},
+            {{4.2, 4.4}, {5.6, 5.8}, {6.0, 6.0}}
         };
 
         run(B);
+        displayNextSub(NdArray<double>.From(B));
 
         // test for set value
         var arr = new NdArray<double>([3, 6, 3]);
         arr[1, 5, 2] = 12.6;
         Console.WriteLine($"arr[1, 5, 2] = {arr[1, 5, 2]}");
+
+        Console.WriteLine("test for slice");
+        B = new double[,,] {
+            {{1.0, 1.0}, {2.0, 2.0}},
+            {{3.0, 3.0}, {4.0, 4.0}},
+            {{5.0, 5.0}, {6.0, 6.0}},
+            {{7.0, 7.0}, {8.0, 8.0}}
+        };
+        arr = NdArray<double>.From(B);
+        Console.WriteLine($"{arr.Slice(1, 3)}");
+
+        B = new double[,,] {
+            {{1.0, 2.0}, {3.0, 4}, {5, 6}, {7, 8}},
+            {{9, 10}, {10, 11}, {11, 12}, {12, 13}},
+            {{14, 15}, {15, 16}, {17, 18}, {18, 19}},
+            {{20, 21}, {22, 23}, {23, 24}, {24, 25}},
+            {{26, 27}, {27, 28}, {29, 30}, {30, 31}}
+        };
+        arr = NdArray<double>.From(B);
+        arr = arr.Slice((1, 4), (1, 4), (0, 2));
+        Console.WriteLine($"{arr}");
+        Console.WriteLine("permute arr via (2, 1, 0)");
+        arr = arr.TakeRow([2, 1, 0]);
+        Console.WriteLine($"{arr}");
+        arr = arr.Slice((1, 2), (1,2), (1,2));
+        Console.WriteLine($"{arr}");
     }
 
     static void run(double[,] A)
@@ -252,5 +395,17 @@ static class NdArrayExample
         //     Console.WriteLine();
         // }
         Console.WriteLine(tensor.ToString());
+    }
+
+    static void displayNextSub(NdArray<double> arr)
+    {
+        Console.WriteLine("display subs");
+        int[] subs = new int[arr.NDim];
+        do
+        {
+            foreach(int idx in subs)
+                Console.Write($"{idx} ");
+            Console.WriteLine();
+        } while (arr.nextSub(subs));
     }
 }

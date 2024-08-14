@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Numerical\Numerical.csproj" />
+    <ProjectReference Include="..\Optimization\Optimization.csproj" />
   </ItemGroup>
 
   <ItemGroup>

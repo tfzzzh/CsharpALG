@@ -1,6 +1,6 @@
 using CsharpALG.Numerical;
 namespace CsharpALG.Optimization;
-class GradientDescent
+public class GradientDescent
 {
     public GradientDescent(NdArray<double>[] x, double learningRate, string lrSchedule = "Constant")
     {
