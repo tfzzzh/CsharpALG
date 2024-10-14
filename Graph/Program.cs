@@ -7,7 +7,8 @@ test_bellmanford();
 test_dijkstra();
 test_floyd();
 test_astar();
-test_hungarian();
+test_rbfs();
+// test_hungarian();
 
 void test_topological_sort()
 {
@@ -303,6 +304,64 @@ void test_astar()
     if (distance < int.MaxValue)
         Console.WriteLine($"distance from {0} to {7} is {distance}");
     alg.PrintRoute(0, 7);
+}
+
+void test_rbfs()
+{
+    Console.WriteLine("test fbfs");
+
+    // case 1: two node graph without edges
+    List<List<int[]> > graph = new List<List<int[]>>(){
+        new List<int[]>(),
+        new List<int[]>()
+    };
+    var alg = new RecursiveBestFirstSearch(graph, 0, 0, [1, 0]);
+    int distance = alg.ComputeDistance();
+    if (distance < int.MaxValue)
+        Console.WriteLine($"distance from 0 to 0 is {distance}");
+    alg.PrintRoute();
+
+    alg.SetProblem(graph, 0, 1, [1, 0]);
+    distance = alg.ComputeDistance();
+    if (distance < int.MaxValue)
+        Console.WriteLine($"distance from {0} to {1} is {distance}");
+    alg.PrintRoute();
+
+    // case 2: use h = [0] make astar a dijkstra
+    graph = new List<List<int[]>>(){
+        new List<int[]>(){new int[]{1, 10}, new int[]{2, 5}},
+        new List<int[]>(){new int[]{2, 2}, new int[]{3, 1}},
+        new List<int[]>(){new int[]{1, 3}, new int[]{3, 9}, new int[]{4, 2}},
+        new List<int[]>(){new int[]{4, 4}},
+        new List<int[]>(){new int[]{0, 7}, new int[]{3, 6}},
+    };
+    alg.SetProblem(graph, 0, 3, [0,0,0,0,0]);
+    distance = alg.ComputeDistance();
+    if (distance < int.MaxValue)
+        Console.WriteLine($"distance from {0} to {3} is {distance}");
+    alg.PrintRoute();
+
+    // case 3:
+    graph = new List<List<int[]>>(){
+        new List<int[]>(){new int[]{1, 4}, new int[]{2, 10}, new int[]{3, 11}},
+        new List<int[]>(){new int[]{2, 8}, new int[]{4, 5}}, // A 1
+        new List<int[]>(){new int[]{4, 15}}, // B 2
+        new List<int[]>(){new int[]{4, 8}, new int[]{6, 2}, new int[]{5, 20}}, // C
+        new List<int[]>(){new int[]{8, 16}, new int[]{9, 20}, new int[]{6, 1}}, // D 4
+        new List<int[]>(){new int[]{7, 19}}, // E 5
+        new List<int[]>(){new int[]{7, 13}}, // F 6
+        new List<int[]>(){}, // G 7
+        new List<int[]>(){new int[]{9, 1}, new int[]{10, 2}}, // H 8
+        new List<int[]>(){new int[]{10, 5}, new int[]{11, 13}, new int[]{7, 3}}, // I 9
+        new List<int[]>(){new int[]{11, 7}}, // J 10
+        new List<int[]>(){new int[]{7, 16}}, // K 11
+    };
+
+    alg.SetProblem(graph, 0, 7, [7, 8, 6, 5, 5, 3, 3, 0, 7, 4, 5, 3]);
+    distance = alg.ComputeDistance();
+    if (distance < int.MaxValue)
+        Console.WriteLine($"distance from {0} to {7} is {distance}");
+    alg.PrintRoute();
 }
 
 void test_hungarian()
