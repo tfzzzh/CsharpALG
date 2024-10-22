@@ -4,8 +4,9 @@ using CsharpALG.MachineLearning.Data;
 
 // AdaBoostExample.Run();
 // KernelSVMExample.Run();
-PegasosSVMExample.Run();
+// PegasosSVMExample.Run();
 // ExampleKDTreeNode.Run();
 // ExampleKNNSearch.Run();
 
 // HierarchicalNExample.Run();
+// TestDiscreteProbDist.TestSampling();
