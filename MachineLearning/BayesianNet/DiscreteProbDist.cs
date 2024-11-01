@@ -44,6 +44,26 @@ public class DiscreteProbDist
         recomputeCDF();
     }
 
+    public DiscreteProbDist(string name, string[] domain, double[] probs)
+    {
+        Debug.Assert(domain.Length == probs.Length);
+
+        this.name = name;
+        variableValues = new(domain.Length);
+        varValue2Index = new();
+        this.probs = new List<double>(probs);
+
+        foreach (string varValue in domain)
+        {
+            variableValues.Add(varValue);
+            varValue2Index.Add(varValue, n);
+            n += 1;
+        }
+
+        Normalize();
+        recomputeCDF();
+    }
+
     // indexer to get or set the prob (the prob may not normalized)
     public double this[string varName]
     {
