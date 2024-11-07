@@ -5,6 +5,7 @@ test_zfunc();
 test_regular_expression();
 test_longest_common_substr();
 test_trie();
+ExampleManacher.Run();
 
 void test_match()
 {
