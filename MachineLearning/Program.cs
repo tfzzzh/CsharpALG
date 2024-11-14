@@ -10,4 +10,6 @@ using CsharpALG.MachineLearning.Data;
 
 // HierarchicalNExample.Run();
 // TestDiscreteProbDist.TestSampling();
-ExampleExactInference.Run();
+// ExampleBuildBayesianNet.Run();
+// ExampleExactInference.Run();
+ExampleSamplerInference.Run();

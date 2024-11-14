@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 
 namespace CsharpALG.MachineLearning;
 
@@ -128,6 +129,16 @@ public class DiscreteProbDist
         }
 
         cdf = null;
+    }
+
+    public override string ToString(){
+        StringBuilder reprbuilder = new();
+        reprbuilder.Append("Prob(");
+        for (int i=0; i < n; ++i) {
+            reprbuilder.Append($"{Domain[i]}:{Probs[i]}, ");
+        }
+        reprbuilder.Append(")");
+        return reprbuilder.ToString();
     }
 
     public string Name { get => name; }
