@@ -11,6 +11,16 @@ public interface IGradientBasedMinimizer
     /// </summary>
     void Step();
 
+    /// <summary>
+    /// Step with Line search Function
+    /// </summary>
+    /// <param name="lossfunc"></param>
+    /// <param name="backwardfunc"></param> <summary>
+    void Step(Func<NdArray<double>[], double> lossfunc, Action<NdArray<double>[]> backwardfunc)
+    {
+        Step();
+    }
+
     // get parameters
     NdArray<double>[] Params {get;}
 }

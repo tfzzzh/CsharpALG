@@ -9,6 +9,7 @@ testBsplineRegression();
 testMeanAndVar();
 testRandomPerm();
 NdArrayExample.Run();
+NdArrayBasicOpsExample.Run();
 FFTExample.Run();
 
 void test_linspace()

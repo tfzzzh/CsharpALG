@@ -2,12 +2,11 @@ using CsharpALG.Numerical;
 namespace CsharpALG.Optimization;
 public class GradientDescent: IGradientBasedMinimizer
 {
-    public GradientDescent(NdArray<double>[] x, double learningRate, string lrSchedule = "Constant")
+    public GradientDescent(NdArray<double>[] x, double learningRate, string lrSchedule = "Constant",
+        ILineSearch? ls = null
+    )
     {
-        this.x = x;
-
-        eta = learningRate;
-        numStep = 0;
+        (this.x, eta, numStep) = (x, learningRate, 0);
 
         if (lrSchedule == "Constant")
             lrScale = (int time) => 1.0;
@@ -17,6 +16,8 @@ public class GradientDescent: IGradientBasedMinimizer
 
         else
             throw new NotImplementedException($"Only [Constant, PolyLR] schedulers are supported");
+
+        this.ls = ls;
     }
 
     private static double PowScale(int time, double alpha = 0.5)
@@ -28,7 +29,47 @@ public class GradientDescent: IGradientBasedMinimizer
     {
         numStep += 1;
         double lr = eta * lrScale(numStep);
+        updateParam(lr);
+    }
 
+    public void Step(Func<NdArray<double>[], double> lossfunc, Action<NdArray<double>[]> backwardfunc)
+    {
+
+        numStep += 1;
+        double lr = eta * lrScale(numStep);
+
+        if (ls != null)
+        {
+            lr = searchLearningRate(lossfunc, backwardfunc, lr);
+        }
+
+        updateParam(lr);
+    }
+
+    private double searchLearningRate(Func<NdArray<double>[], double> lossfunc, Action<NdArray<double>[]> backwardfunc, double lr)
+    {
+        // set parameter for line search
+        var fx = lossfunc(x);
+        var dx = x.Select(p => -(p.Grad!)).ToArray();
+        ls!.SetSearchInterval(1e-8, lr);
+        ls.SetLossAndBackward(lossfunc, backwardfunc);
+        var lsResult = ls.SearchLearningRate(x, dx!, fx);
+
+        // when line search failed use the specified lr
+        if (!lsResult.LearningRate.HasValue)
+        {
+            Console.WriteLine($"Line search failed with reason: {lsResult.What}");
+        }
+        else
+        {
+            lr = lsResult.LearningRate.Value;
+        }
+
+        return lr;
+    }
+
+    private void updateParam(double lr)
+    {
         foreach (var arr in x)
         {
             for (long i = 0; i < arr.Length; ++i)
@@ -41,41 +82,11 @@ public class GradientDescent: IGradientBasedMinimizer
         }
     }
 
-    // public void Minimize(
-    //     Func<NdArray<double>[], double> computeloss,
-    //     Func<NdArray<double>[], NdArray<double>[]> computeGrad,
-    //     int maxIter,
-    //     double tol = 1e-4
-    // )
-    // {
-    //     for (int i = 0; i < maxIter; ++i)
-    //     {
-    //         double gradNorm = 0.0;
-    //         var grads = computeGrad(x);
-    //         for (int j = 0; j < x.Length; ++j)
-    //         {
-    //             x[j].Grad = grads[j];
-
-    //             double gradNormCurr = grads[j].L2Norm();
-    //             gradNormCurr *= gradNormCurr;
-    //             gradNorm += gradNormCurr;
-    //         }
-
-    //         gradNorm = Math.Sqrt(gradNorm);
-
-    //         Step();
-
-    //         double loss = computeloss(x);
-    //         Console.WriteLine($"epoch = {numStep}, loss = {loss}, gradNorm = {gradNorm}");
-
-    //         if (gradNorm < tol) break;
-    //     }
-    // }
-
     public NdArray<double>[] Params {get => x;}
     private NdArray<double>[] x;
     private double eta; // learning rate
     private int numStep; // called step method numStep times
     private delegate double LRScheduler(int time);
     LRScheduler lrScale;
+    ILineSearch? ls;
 }

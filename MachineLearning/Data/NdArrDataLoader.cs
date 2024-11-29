@@ -1,8 +1,11 @@
+using System.Numerics;
 using CsharpALG.Numerical;
 
 namespace CsharpALG.MachineLearning.Data;
 
 public class NdArrayTrainData<FeatureType, LabelType>
+    where FeatureType: INumber<FeatureType>
+    where LabelType: INumber<LabelType>
 {
     public NdArrayTrainData(NdArray<FeatureType> feature, NdArray<LabelType> label,
         int batchsize,

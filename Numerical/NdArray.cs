@@ -1,10 +1,10 @@
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
+using System.Numerics;
 
 namespace CsharpALG.Numerical;
 
-public class NdArray<T>
+public class NdArray<T> where T : INumber<T>
 {
     public NdArray(int[] shape)
     {
@@ -90,10 +90,12 @@ public class NdArray<T>
         return new NdArray<T>(data, shape);
     }
 
+    // Note That the grad pointer is set to null in the cloned version
     public NdArray<T> Clone()
     {
         T[] data_cloned = (T[]) buffer_.Clone();
         NdArray<T> clone = new NdArray<T>(data_cloned, Shape);
+        clone.Grad = null;
         return clone;
     }
 
@@ -297,6 +299,57 @@ public class NdArray<T>
         return r.ToString();
     }
 
+    /*
+    Basic Operators
+    */
+    // negative
+    public static NdArray<T> operator-(NdArray<T> a) {
+        var b = a.Clone();
+        for (int i=0; i < b.Data.Length; ++i) {
+            b.Data[i] = -a.Data[i];
+        }
+        return b;
+    }
+
+    // Add, it shall be note that in C# += cannot be overloaded. So
+    // X += Y has the same complexity as X = X + Y. And one will
+    // allocate memory for this operation.
+    public static NdArray<T> operator+(NdArray<T> a, NdArray<T> b) {
+        var c = a.Clone();
+        c.Grad = null;
+        for (int i=0; i < b.Data.Length; ++i) {
+            c.Data[i] += b.Data[i];
+        }
+        return c;
+    }
+
+    public static NdArray<T> operator-(NdArray<T> a, NdArray<T> b) {
+        var c = a.Clone();
+        c.Grad = null;
+        for (int i=0; i < b.Data.Length; ++i) {
+            c.Data[i] -= b.Data[i];
+        }
+        return c;
+    }
+
+    public static NdArray<T> operator*(NdArray<T> a, NdArray<T> b) {
+        var c = a.Clone();
+        c.Grad = null;
+        for (int i=0; i < b.Data.Length; ++i) {
+            c.Data[i] -= b.Data[i];
+        }
+        return c;
+    }
+
+    public static NdArray<T> operator/(NdArray<T> a, NdArray<T> b) {
+        var c = a.Clone();
+        c.Grad = null;
+        for (int i=0; i < b.Data.Length; ++i) {
+            c.Data[i] /= b.Data[i];
+        }
+        return c;
+    }
+
     private T[] buffer_;
     public int[] Shape { get; internal set; }
     public long[] Stride { get; internal set; }
@@ -407,5 +460,35 @@ static class NdArrayExample
                 Console.Write($"{idx} ");
             Console.WriteLine();
         } while (arr.nextSub(subs));
+    }
+}
+
+static class NdArrayBasicOpsExample
+{
+    public static void Run()
+    {
+        double[,] A = new double[,]{
+            {1.0, 2.0, 3.0, 4.0},
+            {5.0, 6.0, 7.0, 8.0},
+            {9.0, 10.0, 11.0, 12.0}
+        };
+        double[,] B = new double[,] {
+            {2.0, 3.0, 4.0, 5.0},
+            {5.0, 6.0, 7.0, 8.0},
+            {3.0, 2.0, 11.0, 1.0}
+        };
+
+        var Amat = NdArray<double>.From(A);
+        var Bmat = NdArray<double>.From(B);
+        Console.WriteLine("-A=");
+        Console.WriteLine($"{-Amat}");
+        Console.WriteLine("A+B=");
+        Console.WriteLine($"{Amat+Bmat}");
+        Console.WriteLine("A-B=");
+        Console.WriteLine($"{Amat-Bmat}");
+        Console.WriteLine("A*B=");
+        Console.WriteLine($"{Amat*Bmat}");
+        Console.WriteLine("A/B=");
+        Console.WriteLine($"{Amat/Bmat}");
     }
 }

@@ -11,27 +11,26 @@ public static class Minimizer {
         double tol = 1e-4
     )
     {
+        Action<NdArray<double>[] > backward = (x) => {
+            var grads = computeGrad(x);
+            foreach((var param, var grad) in x.Zip(grads))
+            {
+                param.Grad = grad;
+            }
+        };
+
         var x = method.Params;
         for (int i = 0; i < maxIter; ++i)
         {
+            backward(x);
             double gradNorm = 0.0;
-            var grads = computeGrad(x);
-            for (int j = 0; j < x.Length; ++j)
-            {
-                x[j].Grad = grads[j];
-
-                double gradNormCurr = grads[j].L2Norm();
-                gradNormCurr *= gradNormCurr;
-                gradNorm += gradNormCurr;
-            }
-
+            gradNorm = x.Select(x => {var norm = x.Grad!.L2Norm(); return norm * norm;}).Sum();
             gradNorm = Math.Sqrt(gradNorm);
 
-            method.Step();
+            method.Step(computeloss, backward);
 
             double loss = computeloss(x);
             Console.WriteLine($"epoch = {i}, loss = {loss}, gradNorm = {gradNorm}");
-
             if (gradNorm < tol) break;
         }
     }
@@ -40,14 +39,6 @@ public static class Minimizer {
 static class ExampleGradientDescent
 {
     public static void Run() {
-        Console.WriteLine("run graident descent");
-        run("GradientDescent");
-        Console.WriteLine("run adam");
-        run("Adam");
-    }
-
-    public static void run(string method="GradientDescent")
-    {
         int n = 5, d = 10;
         var xs = new NdArray<double>[n];
         for (int i=0; i < n; ++i)
@@ -56,12 +47,34 @@ static class ExampleGradientDescent
             xs[i] = new NdArray<double>(arr, [d]);
         }
 
+        run(xs, "GradientDescent");
+        run(xs, "GradientDescentWithLineSearch");
+        run(xs, "Adam");
+    }
+
+    public static void run(NdArray<double>[] xs, string method="GradientDescent")
+    {
+        // int n = 5, d = 10;
+        // var xs = new NdArray<double>[n];
+        // for (int i=0; i < n; ++i)
+        // {
+        //     double[] arr = (double[]) LinearAlg.RandomUniform(-5.0, 5.0, [d]);
+        //     xs[i] = new NdArray<double>(arr, [d]);
+        // }
+        Console.WriteLine($"Run {method}");
+        xs = xs.Select(x => x.Clone()).ToArray();
+
         IGradientBasedMinimizer opt;
         if (method == "GradientDescent") {
             opt = new GradientDescent(xs, 2e-3);
         }
+        else if (method == "GradientDescentWithLineSearch")
+        {
+            var ls = new WeakWolf(1e-1, 0.1, 0.1);
+            opt = new GradientDescent(xs,  learningRate:1e-1, ls:ls);
+        }
         else {
-            opt = new Adam(xs, 1e-1);
+            opt = new Adam(xs, 0.5e-1, 0.8, 0.4);
         }
         Minimizer.Minimize(computeloss, computeGrad, opt, 100);
 
